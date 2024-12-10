@@ -1,0 +1,198 @@
+{% load static %}
+
+<!--NAVBAR-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-custom">
+    <div class="container">
+        <!-- LOGO -->
+        <a class="navbar-brand d-inline-block" href="#">
+            <img src="{% static 'images/logo.png' %}" alt="logo picture" class="w-auto">
+        </a>
+
+        <!-- Toggler for smaller screens -->
+        <button 
+            class="navbar-toggler shadow-none border-0 d-lg-none"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Regular Navbar for larger screens -->
+        <div class="collapse navbar-collapse d-none d-lg-flex">
+            <ul class="navbar-nav justify-content-center flex-grow-1 fs-6">
+                <li class="nav-item mx-2">
+                    <a class="nav-link {% if request.path == '/' or request.path == '/home/' or request.path == '/register/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                </li>
+                <!-- Games Link -->
+                <li class="nav-item mx-2">
+                    <a class="nav-link {% if '/games' in request.path %}active{% endif %}" href="{% url 'games' %}">Games</a>
+                </li>
+                {% if 'games' in request.path %}
+                    <div class="dropdown me-3">
+                    <button class="btn dropdown-toggle text-white" type="button" id="genreDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if selected_genre %}
+                        {{ selected_genre }}
+                    {% else %}
+                        All Genres
+                    {% endif %}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end rounded-3" aria-labelledby="genreDropdown">
+                        <li><a class="dropdown-item text-nowrap text-truncate d-inline-block" href="{% url 'games' %}">All Genres</a></li>
+                        {% for genre in genres %}
+                            <a class="dropdown-item text-nowrap text-truncate d-inline-block" href="{% url 'games_by_genre' genre=genre|urlencode %}">{{ genre }}</a>
+                        {% endfor %}
+                    </ul>
+                    </div>
+                {% endif %}
+                <!-- About Us Link -->
+                <li class="nav-item mx-2">
+                    <a class="nav-link {% if '/about' in request.path %}active{% endif %}" href="{% url 'about_us' %}">About Us</a>
+                </li>
+                <!-- Contact Link -->
+                <li class="nav-item mx-2">
+                    <a class="nav-link {% if '/contact' in request.path %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link {% if '/search' in request.path %}active{% endif %}" href="{% url 'search_page' %}">Search</a>
+                </li>
+                {% if user.is_authenticated and user.is_employee %}
+                    <li class="nav-item mx-2">
+                        <a class="nav-link {% if '/Add_Game' in request.path %}active{% endif %}" href="{% url 'add_game' %}">Add Game</a>
+                    </li>
+                {% endif %}
+            </ul>
+
+            <!-- Login / Sign Up or Icons for Logged-In Users -->
+            <div class="d-flex align-items-center gap-3">
+                {% if user.is_authenticated %}
+                    <!-- Profile Icon -->
+                    <a href="{% url 'profile' %}" class="text-white fs-6">
+                        <i class="bi bi-person-circle fs-3"></i> 
+                    </a>
+                    <!-- Shopping Cart Icon -->
+                    <a href="{% url 'view_cart' %}" class="text-white fs-6 position-relative">
+                        <i class="bi bi-cart-fill fs-3"></i>
+                        <span id="cart-count" class="badge bg-danger rounded-pill {% if cart_count == 0 %}d-none{% endif %}">
+                            {{ cart_count }}
+                        </span>
+                    </a>
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                    {% if user.is_staff %}
+                        <a href="/admin/" class="btn btn-primary">Go to Admin Page</a>
+                    {% endif %}
+                    <!-- Logout Icon -->
+                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <a href="#" onclick="this.closest('form').submit();" class="text-white fs-6">
+                            <i class="bi bi-box-arrow-right fs-3"></i>
+                        </a>
+                    </form>
+                {% else %}
+                    <!-- Sign Up and Login Links -->
+                    <a href="{% url 'login' %}" class="text-black text-decoration-none px-3 py-1 custom-radius fs-6 sign-up-button">Login</a>
+                    <a href="{% url 'signup' %}" class="text-black text-decoration-none px-3 py-1 custom-radius fs-6 sign-up-button">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Offcanvas Sidebar for mobile screens -->
+        <div class="offcanvas offcanvas-start d-lg-none sidebar custom-sidebar" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel1">
+            <div class="offcanvas-header text-white border-bottom">
+                <h5 class="offcanvas-title fs-6" id="offcanvasNavbarLabel1">Menu</h5>
+                <button type="button" class="btn-close btn-close-dark shadow-none" data-bs-dismiss="offcanvas" aria-label="close"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column justify-content-between align-items-center justify-content-center">
+                <ul class="navbar-nav fs-6 flex-grow-1 d-flex flex-column justify-content-center align-items-center text-center w-100 gap-3">
+                    <li class="nav-item mx-2">
+                        <a class="nav-link {% if request.path == '/' or request.path == '/home/' or request.path == '/register/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <!-- Games Link -->
+                    <li class="nav-item mx-2">
+                        <a class="nav-link {% if '/games' in request.path %}active{% endif %}" href="{% url 'games' %}">Games</a>
+                    </li>
+                    {% if 'games' in request.path %}
+                        <div class="dropdown me-3">
+                            <button class="btn dropdown-toggle text-white" type="button" id="genreDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% if selected_genre %}
+                                    {{ selected_genre }}
+                                {% else %}
+                                    All Genres
+                                {% endif %}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="genreDropdown" style="max-width: 200px; white-space: normal; word-wrap: break-word; overflow-y: auto;">
+                                <li><a class="dropdown-item" href="{% url 'games' %}">All Genres</a></li>
+                                {% for genre in genres %}
+                                    <li><a class="dropdown-item" href="{% url 'games_by_genre' genre=genre|urlencode %}">{{ genre }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    <!-- About Us Link -->
+                    <li class="nav-item mx-2">
+                        <a class="nav-link {% if '/about' in request.path %}active{% endif %}" href="{% url 'about_us' %}">About Us</a>
+                    </li>
+                    <!-- Contact Link -->
+                    <li class="nav-item mx-2">
+                        <a class="nav-link {% if '/contact' in request.path %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item mx-2 d-flex align-items-center mt-5">
+                        <form action="" class="search-form">
+                            <input type="text" placeholder="Search..." class="search-input d-flex align-items-center" />
+                            <div class="search-button">
+                                <ion-icon class="search-icon" name="search-outline"></ion-icon>
+                                <ion-icon class="search-close" name="close-outline"></ion-icon>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+
+                <!-- Login / Sign Up or Icons for Logged-In Users in Sidebar -->
+                <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 mt-auto">
+                {% if user.is_authenticated %}
+                    <!-- Group Profile, Cart, and Logout Icons in a Row -->
+                    <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
+                        <!-- Profile Icon -->
+                        <a href="{% url 'profile' %}" class="text-white fs-6">
+                            <i class="bi bi-person-circle fs-3"></i> 
+                        </a>
+                        <!-- Shopping Cart Icon -->
+                        <a href="{% url 'view_cart' %}" class="text-white fs-6 position-relative">
+                            <i class="bi bi-cart-fill fs-3"></i>
+                            <span id="cart-count" class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle {% if cart_count == 0 %}d-none{% endif %}">
+                                {{ cart_count }}
+                            </span>
+                        </a>
+                        <!-- Logout Icon -->
+                        <form action="{% url 'logout' %}" method="post" id="logout-form">
+                            {% csrf_token %}
+                        </form>
+                        
+                        <a href="#" onclick="document.getElementById('logout-form').submit();" class="text-white fs-6">
+                            <i class="bi bi-box-arrow-right fs-3"></i>
+                        </a>
+                        <!--<form action="{% url 'logout' %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <a href="#" onclick="this.closest('form').submit();" class="text-white fs-6">
+                                <i class="bi bi-box-arrow-right fs-3"></i>
+                            </a>
+                        </form>-->
+                    </div>
+                    <!-- Admin Page Link for Staff -->
+                    {% if user.is_staff %}
+                        <a href="/admin/" class="btn btn-primary mt-2">Go to Admin Page</a>
+                    {% endif %}
+                {% else %}
+                    <!-- Sign Up and Login Links -->
+                    <a href="{% url 'login' %}" class="text-black text-decoration-none px-3 py-1 custom-radius fs-6 sign-up-button">Login</a>
+                    <a href="{% url 'signup' %}" class="text-black text-decoration-none px-3 py-1 custom-radius fs-6 sign-up-button">Sign Up</a>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<script>
+    var csrfToken = "{{ csrf_token }}";
+</script>
+<script src="{% static 'js/scripts.js' %}"></script>

@@ -1,0 +1,25 @@
+{% extends 'games_db/base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="cart-section">
+        <div class="cart-container">
+            <h1 style="color: white; text-align: center">Your Cart</h1>
+                {% if cart_items %}
+                    <ul>
+                        {% for item in cart_items %}
+                            <li>
+                                {{ item.product.title }} - {{ item.quantity }} x ${{ item.product.price }} 
+                                Total: ${{ item.total_price }}
+                                <a href="{% url 'remove_from_cart' item.id %}">Remove</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <p>Total Price: ${{ total_price }}</p>
+                    <a href="{% url 'checkout' %}">Proceed to Checkout</a>
+                {% else %}
+                    <p>Your cart is empty.</p>
+                {% endif %}
+        </div>
+    </section>
+{% endblock %}

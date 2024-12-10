@@ -1,0 +1,59 @@
+{% extends 'games/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Game Details - {{ game.title }}{% endblock %}
+
+
+
+{% block content %}
+<section class="game_detail-section">
+    <div class="game_detail-container">
+        <!--<div class="container mt-4">-->
+            <h1>{{ game.title }}</h1>
+
+            <!-- Game photo -->
+            {% if game.photo %}
+                <img src="{{ game.photo.url }}" class="img-fluid" alt="{{ game.title }}">
+            {% else %}
+                <p>No image available.</p>
+            {% endif %}
+
+            <!-- Game details -->
+            <p><strong>Publisher:</strong> {{ game.publisher }}</p>
+            <p><strong>Genre:</strong> {{ game.genre }}</p>
+            <p><strong>Console:</strong> {{ game.console }}</p>
+            <p><strong>Release Date:</strong> {{ game.rel_date }}</p>
+            <p><strong>Price:</strong> ${{ game.price }}</p>
+            <p><strong>Availability:</strong> {{ game.availability }}</p>
+            <p><strong>Description:</strong> {{ game.description }}</p>
+            <p><strong>PEGI Rating:</strong> {{ game.pegi }}</p>
+            <p><strong>Requirements:</strong> {{ game.requirements }}</p>
+
+            <!-- Trailer link -->
+            {% if game.trailer %}
+                <p><strong>Trailer:</strong> <a href="{{ game.trailer }}" target="_blank">Watch Trailer</a></p>
+            {% endif %}
+
+            <!-- Game rating -->
+            <!--<p><strong>Rating:</strong> {{ game.rating }} / 10</p>-->
+            <!-- Star Rating and Submission Section -->
+            <div class="d-flex justify-content-center align-items-center mt-4">
+                <div class="rating {% if not user.is_authenticated %}disabled-rating{% endif %}" data-game-id="{{ game.game_id }}">
+                    {% for star in star_range %}
+                        <i class="fa fa-star {% if game.rating >= star %}selected{% endif %} {% if not user.is_authenticated %}disabled-star{% endif %}" data-star="{{ star }}"></i>
+                    {% endfor %}
+                </div>
+                {% if user.is_authenticated %}
+                    <button class="btn btn-primary mt-2 ms-3 submit-rating btn-sm rounded-pill">Submit Rating</button>
+                {% endif %}
+            </div>
+            {% if user.is_authenticated %}
+                <button class="btn btn-success btn-sm add-to-cart rounded-pill mt-2" data-game-id="{{ game.game_id }}">Add to Cart</button>
+            {% endif %}
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            <a href="{% url 'games' %}" class="btn btn-primary mt-2 rounded-pill">Back to Games</a>
+        <!--</div>-->
+    </div>
+</section>
+{% endblock %}

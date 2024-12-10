@@ -1,0 +1,16 @@
+{% extends 'register/base.html' %}  <!-- Assuming you have a base template -->
+
+{% block content %}
+<section class="profile-section" style="max-height: 65vh; overflow-y: auto;">
+    <div class="profile-container">
+        <section class="container my-5">
+            <h2>Update Profile</h2>
+            <form method="POST">
+                {% csrf_token %}
+                {{ profile_form.as_p }}  <!-- Renders the form as paragraphs -->
+                <button type="submit" class="btn btn-primary mt-3">Update Profile</button>
+            </form>
+        </section>
+    </div>
+</section>
+{% endblock %}

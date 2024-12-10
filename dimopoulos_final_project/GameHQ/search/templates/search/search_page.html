@@ -1,0 +1,198 @@
+{% extends 'search/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}GameHQ | Search{% endblock %}
+{% block content %}
+<section class="container-fluid my-4 px-3 px-md-5">
+    <div class="game_detail-container">
+        <h1>Search Games</h1>
+        <!-- Search Form -->
+            <form method="get" action="{% url 'search_page' %}">
+                <input type="text" name="game_title" placeholder="Search by Game Title" value="{{ request.GET.game_title }}">
+                <input type="text" name="publisher" placeholder="Search by Publisher" value="{{ request.GET.publisher }}">
+                <button type="submit">Search</button>
+            </form>
+
+        <div class="search-results mt-4">
+            <h2>Search Results</h2>
+            {% if games %}
+                <div class="container-fluid my-4 px-3 px-md-5">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 justify-content-center">
+                        {% for game in games %}
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <div class="card mb-3 custom-card">
+                                    <!-- Image Section -->
+                                    <div class="card-img-container mt-2">
+                                        <img src="{{ game.photo.url }}" class="card-img-top" alt="{{ game.title }}">
+                                    </div>
+                                    <!-- Text Section -->
+                                    <div class="card-body">
+                                        <h7 class="card-title">{{ game.title }}</h7>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <p class="card-text mb-0 me-3">Price: {{ game.price }}</p>
+                                            <p class="card-text mb-0">Availability: {{ game.availability }}</p>
+                                        </div>
+                                        <!-- Rating Section -->
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <div class="rating {% if not user.is_authenticated %}disabled-rating{% endif %}" data-game-id="{{ game.game_id }}">
+                                                {% for star in star_range %}
+                                                    <i class="fa fa-star {% if game.rating >= star %}selected{% endif %} {% if not user.is_authenticated %}disabled-star{% endif %}" data-star="{{ star }}"></i>
+                                                {% endfor %}
+                                            </div>
+                                            {% if user.is_authenticated %}
+                                                <button class="btn btn-primary mt-2 ms-3 submit-rating btn-sm rounded-pill">Submit Rating</button>
+                                            {% endif %}
+                                        </div>
+                                        <a href="{{ game.get_absolute_url }}" class="btn btn-primary btn-sm mt-3 rounded-pill">See More</a>
+                                        {% if user.is_authenticated %}
+                                            <button class="btn btn-success btn-sm add-to-cart rounded-pill mt-2" data-game-id="{{ game.game_id }}">Add to Cart</button>
+                                        {% endif %}
+                                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <p>No games found.</p>
+            {% endif %}
+        </div>
+    
+        <div class="recommended-games">
+            <h3>Recommended Games (Same Genre)</h3>
+            {% if recommended_games %}
+                <div class="container-fluid my-4 px-3 px-md-5">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 justify-content-center">
+                        {% for game in recommended_games %}
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <div class="card mb-3 custom-card">
+                                    <!-- Image Section -->
+                                    <div class="card-img-container mt-2">
+                                        <img src="{{ game.photo.url }}" class="card-img-top" alt="{{ game.title }}">
+                                    </div>
+                                    <!-- Text Section -->
+                                    <div class="card-body">
+                                        <h7 class="card-title">{{ game.title }}</h7>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <p class="card-text mb-0 me-3">Price: {{ game.price }}</p>
+                                            <p class="card-text mb-0">Availability: {{ game.availability }}</p>
+                                        </div>
+                                        <!-- Rating Section -->
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <div class="rating {% if not user.is_authenticated %}disabled-rating{% endif %}" data-game-id="{{ game.game_id }}">
+                                                {% for star in star_range %}
+                                                    <i class="fa fa-star {% if game.rating >= star %}selected{% endif %} {% if not user.is_authenticated %}disabled-star{% endif %}" data-star="{{ star }}"></i>
+                                                {% endfor %}
+                                            </div>
+                                            {% if user.is_authenticated %}
+                                                <button class="btn btn-primary mt-2 ms-3 submit-rating btn-sm rounded-pill">Submit Rating</button>
+                                            {% endif %}
+                                        </div>
+                                        <a href="{{ game.get_absolute_url }}" class="btn btn-primary btn-sm mt-3 rounded-pill">See More</a>
+                                        {% if user.is_authenticated %}
+                                            <button class="btn btn-success btn-sm add-to-cart rounded-pill mt-2" data-game-id="{{ game.game_id }}">Add to Cart</button>
+                                        {% endif %}
+                                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <p>No recommendations available.</p>
+            {% endif %}
+        </div>
+        {% if user.is_authenticated %}
+            <div class="user-history mt-4">
+                <h3>You Searched for</h3>
+                    {% if user_search_history %}
+                        <div class="container-fluid my-4 px-3 px-md-5">
+                            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 justify-content-center">
+                                {% for game in user_search_history %}
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div class="card mb-3 custom-card">
+                                            <!-- Image Section -->
+                                            <div class="card-img-container mt-2">
+                                                <img src="{{ game.photo.url }}" class="card-img-top" alt="{{ game.title }}">
+                                            </div>
+                                            <!-- Text Section -->
+                                            <div class="card-body">
+                                                <h7 class="card-title">{{ game.title }}</h7>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <p class="card-text mb-0 me-3">Price: {{ game.price }}</p>
+                                                    <p class="card-text mb-0">Availability: {{ game.availability }}</p>
+                                                </div>
+                                                <!-- Rating Section -->
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <div class="rating {% if not user.is_authenticated %}disabled-rating{% endif %}" data-game-id="{{ game.game_id }}">
+                                                        {% for star in star_range %}
+                                                            <i class="fa fa-star {% if game.rating >= star %}selected{% endif %} {% if not user.is_authenticated %}disabled-star{% endif %}" data-star="{{ star }}"></i>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <button class="btn btn-primary mt-2 ms-3 submit-rating btn-sm rounded-pill">Submit Rating</button>
+                                                </div>
+                                                <a href="{{ game.get_absolute_url }}" class="btn btn-primary btn-sm mt-3 rounded-pill">See More</a>
+                                                <button class="btn btn-success btn-sm add-to-cart rounded-pill mt-2" data-game-id="{{ game.game_id }}">Add to Cart</button>
+                                                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <p>No searches available.</p>
+                    {% endif %}
+            </div>
+        {% endif %}
+        <div class="most-searched mt-4">
+            <h3>Most Searched Games</h3>
+            {% if most_searched_games %}
+                <div class="container-fluid my-4 px-3 px-md-5">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 justify-content-center">
+                        {% for game in most_searched_games %}
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <div class="card mb-3 custom-card">
+                                    <!-- Image Section -->
+                                    <div class="card-img-container mt-2">
+                                        <img src="{{ game.photo.url }}" class="card-img-top" alt="{{ game.title }}">
+                                    </div>
+                                    <!-- Text Section -->
+                                    <div class="card-body">
+                                        <h7 class="card-title">{{ game.title }}</h7>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <p class="card-text mb-0 me-3">Price: {{ game.price }}</p>
+                                            <p class="card-text mb-0">Availability: {{ game.availability }}</p>
+                                        </div>
+                                        <!-- Rating Section -->
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <div class="rating {% if not user.is_authenticated %}disabled-rating{% endif %}" data-game-id="{{ game.game_id }}">
+                                                {% for star in star_range %}
+                                                    <i class="fa fa-star {% if game.rating >= star %}selected{% endif %} {% if not user.is_authenticated %}disabled-star{% endif %}" data-star="{{ star }}"></i>
+                                                {% endfor %}
+                                            </div>
+                                            {% if user.is_authenticated %}
+                                                <button class="btn btn-primary mt-2 ms-3 submit-rating btn-sm rounded-pill">Submit Rating</button>
+                                            {% endif %}
+                                        </div>
+                                        <a href="{{ game.get_absolute_url }}" class="btn btn-primary btn-sm mt-3 rounded-pill">See More</a>
+                                        {% if user.is_authenticated %}
+                                            <button class="btn btn-success btn-sm add-to-cart rounded-pill mt-2" data-game-id="{{ game.game_id }}">Add to Cart</button>
+                                        {% endif %}
+                                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <p>No searches available.</p>
+            {% endif %}
+        </div>   
+    </div>
+</section>
+{% endblock %}

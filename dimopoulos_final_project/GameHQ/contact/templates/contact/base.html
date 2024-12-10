@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"> 
+    <title>GameHQ | Contact Us</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        html, body {
+          height: 100%;
+          overflow-x: hidden;
+          margin: 0;
+          padding: 0;
+          overflow-y: auto !important;
+        }
+        @media (max-width: 576px) {
+            body {
+              overflow: auto;
+            }
+          }
+          /* Full height of the body, ensuring it takes up 100% of the screen */
+        .content-wrapper {
+          height: 100%;
+          overflow-y: auto; /* Allow scrolling inside the container if necessary */
+        }
+        @media (min-width: 768px) {
+          .custom-footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        }
+
+        /* On smaller screens, make the footer static */
+        @media (max-width: 767.98px) {
+        .custom-footer {
+          position: static;
+        }
+        }
+        /* Enable vertical scrolling only on smaller screens */
+        @media (max-width: 767.98px) {
+          body {
+            overflow-y: auto; /* Enable vertical scrolling */
+          }
+        }
+
+        /* Disable scrolling on larger screens */
+        @media (min-width: 768px) {
+          body {
+            overflow-y: hidden; /* Prevent vertical scrolling */
+          }
+        }
+        @media (min-width: 1024px) and (max-width: 1440px) {
+          html, body {
+              overflow-y: auto;
+          }
+      }
+  </style>
+
+</head>
+<!--<body class="vh-100 overflow-hidden body-custom">-->
+<body class="vh-100" style="background: url('{% static 'images/bcg.jpg' %}')">
+    {% include 'navbar.html' %}
+    <div class="container">
+        {% block content %}
+        
+        {% endblock %}
+    </div>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <!-- IONICONS -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <footer class="text-center bg-dark py-2 custom-footer">
+      {% include 'footer.html' %}
+  </footer>
+</body>
+</html>

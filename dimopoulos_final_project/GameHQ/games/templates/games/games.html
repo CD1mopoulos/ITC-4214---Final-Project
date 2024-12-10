@@ -1,0 +1,59 @@
+{% extends 'games/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}GameHQ | Games{% endblock %}
+
+{% block content %}
+    <div class="container-fluid my-4 px-3 px-md-5">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 justify-content-center">
+            {% for game in games %}
+                <div class="col-12 col-sm-6 col-md-4">
+                    <div class="card mb-3 custom-card">
+                        <!-- Image Section -->
+                        <div class="card-img-container mt-2">
+                            <img src="{{ game.photo.url }}" class="card-img-top" alt="{{ game.title }}">
+                        </div>
+                        <!-- Text Section -->
+                        <div class="card-body">
+                            <h7 class="card-title">{{ game.title }}</h7>
+                            <!--<p class="card-text">Publisher: {{ game.publisher }}</p>-->
+                            <!--<p class="card-text">Genre: {{ game.genre }}</p>-->
+                            <!--<p class="card-text">Console: {{ game.console }}</p>-->
+                            <!--<p class="card-text">Release Date: {{ game.rel_date }}</p>-->
+                            <div class="d-flex justify-content-center align-items-center">
+                                <p class="card-text mb-0 me-3">Price: {{ game.price }}</p>
+                                <p class="card-text mb-0">Availability: {{ game.availability }}</p>
+                            </div>
+                            {% if user.is_authenticated and user.is_employee %}
+                                <button type="button" 
+                                    class="btn btn-danger btn-sm rounded-pill mt-2 delete-game-btn" 
+                                    data-game-id="{{ game.game_id }}">Delete Game</button>
+                            {% else %}
+                                <!-- Rating Section -->
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <div class="rating {% if not user.is_authenticated %}disabled-rating{% endif %}" data-game-id="{{ game.game_id }}">
+                                        {% for star in star_range %}
+                                            <i class="fa fa-star {% if game.rating >= star %}selected{% endif %} {% if not user.is_authenticated %}disabled-star{% endif %}" data-star="{{ star }}"></i>
+                                        {% endfor %}
+                                    </div>
+                                    {% if user.is_authenticated %}
+                                        <button class="btn btn-primary mt-2 ms-3 submit-rating btn-sm rounded-pill">Submit Rating</button>
+                                    {% endif %}
+                                </div>
+                                <!--<p class="average-rating mt-2">{{ game.rating|floatformat:1 }}</p>-->
+                                <a href="{{ game.get_absolute_url }}" class="btn btn-primary btn-sm mt-3 rounded-pill">See More</a>
+                                {% if user.is_authenticated %}
+                                    <button class="btn btn-success btn-sm add-to-cart rounded-pill mt-2" data-game-id="{{ game.game_id }}">Add to Cart</button>
+                                {% endif %}
+                                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No games available.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

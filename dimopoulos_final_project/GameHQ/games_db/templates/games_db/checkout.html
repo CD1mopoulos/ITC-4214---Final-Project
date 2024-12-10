@@ -1,0 +1,69 @@
+{% extends 'games_db/base.html' %}
+{% load static %}
+
+<style>
+    .custom-input {
+        width: 90%; /* Increase width */
+        height: 40px !important; /* Reduce height */
+        font-size: 14px; /* Adjust font size for better readability */
+        margin: auto; /* Center align inputs if needed */
+    }
+
+    textarea.custom-input {
+        height: 40px !important; /* Adjust textarea height separately */
+    }
+</style>
+
+{% block content %}
+<section class="cart-section">
+    <div class="cart-container">
+        <h5 class="modal-title w-100 text-center text-white">Checkout</h5>
+        <div class="modal-body fs-6 fs-sm-5 fs-md-6">
+            <form method="POST" class="row g-3">
+                {% csrf_token %}
+
+                <!-- Name and Surname Fields in One Row -->
+                <div class="col-md-6">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" name="name" id="name" class="form-control custom-input" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="surname" class="form-label">Surname</label>
+                    <input type="text" name="surname" id="surname" class="form-control custom-input" required>
+                </div>
+
+                <!-- Address Field Full Width -->
+                <div class="col-12">
+                    <label for="address" class="form-label">Address</label>
+                    <textarea name="address" id="address" class="form-control custom-input" rows="3" style="height:40px;" required></textarea>
+                </div>
+
+                <!-- Phone and Payment Method Fields in One Row -->
+                <div class="col-md-6">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" name="phone" id="phone" class="form-control custom-input" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="payment_method" class="form-label">Payment Method</label>
+                    <select name="payment_method" id="payment_method" class="form-select custom-input">
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="PayPal">PayPal</option>
+                    </select>
+                </div>
+
+                <!-- Email Field Full Width -->
+                <div class="col-12">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" name="email" id="email" class="form-control custom-input" required>
+                </div>
+
+                <!-- Submit Button Full Width -->
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-3 rounded-pill">Complete Purchase</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

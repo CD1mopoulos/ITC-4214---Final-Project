@@ -1,0 +1,72 @@
+{% extends 'Add_Game/base.html' %}
+{% load static %}
+
+{% block title %}GameHQ | Add Game{% endblock %}
+{% block content %}
+<section class="add-game-section">
+    <div class="add-game-container">
+      <h5 class="modal-title w-100 text-center text-white">Add a New Game</h5>
+      <div class="modal-body fs-6 fs-sm-5 fs-md-6">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="col-12">
+            <label for="id_title" class="form-label">Title</label>
+            <input type="text" name="title" class="form-control" id="id_title" required>
+          </div>
+          <div class="col-12">
+            <label for="id_description" class="form-label">Description</label>
+            <textarea name="description" class="form-control" id="id_description" required></textarea>
+          </div>
+          <div class="col-12">
+            <label for="id_genre" class="form-label">Genre</label>
+            <input type="text" name="genre" class="form-control" id="id_genre" required>
+          </div>
+          <div class="col-12">
+            <label for="id_pegi" class="form-label">PEGI Rating</label>
+            <input type="number" name="pegi" class="form-control" id="id_pegi" min="3" max="18" required>
+          </div>
+          <div class="col-12">
+            <label for="id_console" class="form-label">Console</label>
+            <input type="text" name="console" class="form-control" id="id_console" required>
+          </div>
+          <div class="col-12">
+            <label for="id_requirements" class="form-label">Requirements</label>
+            <textarea name="requirements" class="form-control" id="id_requirements" required></textarea>
+          </div>
+          <div class="col-12">
+            <label for="id_publisher" class="form-label">Publisher</label>
+            <input type="text" name="publisher" class="form-control" id="id_publisher" required>
+          </div>
+          <div class="col-12">
+            <label for="id_price" class="form-label">Price</label>
+            <input type="number" name="price" class="form-control" id="id_price" step="0.01" required>
+          </div>
+          <div class="col-12">
+            <label for="id_availability" class="form-label">Availability (Stock)</label>
+            <input type="number" name="availability" class="form-control" id="id_availability" required>
+          </div>
+          <div class="col-12">
+            <label for="id_photo" class="form-label">Photo</label>
+            <input type="file" name="photo" class="form-control" id="id_photo">
+          </div>
+          <div class="col-12">
+            <label for="id_trailer" class="form-label">Trailer URL</label>
+            <input type="url" name="trailer" class="form-control" id="id_trailer">
+          </div>
+          <div class="col-12">
+            <label for="id_rel_date" class="form-label">Release Date</label>
+            <input type="date" name="rel_date" class="form-control" id="id_rel_date" required>
+          </div>
+          <div class="col-12">
+            <label for="id_rating" class="form-label">Rating</label>
+            <input type="number" name="rating" class="form-control" id="id_rating" step="0.1" required>
+          </div>
+          <div class="col-12">
+            <input type="hidden" name="add_game" value="1">
+            <button type="submit" class="btn btn-primary btn-lg w-100 mt-3 rounded-pill">Add Game</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+{% endblock %}
